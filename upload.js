@@ -1,25 +1,19 @@
-const uploadInput = document.getElementById("uploadInput");
-const previewContainer = document.getElementById("previewContainer");
+const imageInput = document.getElementById('imageInput');
+const preview = document.getElementById('preview');
 
-uploadInput.addEventListener("change", () => {
-  previewContainer.innerHTML = "";
-
-  Array.from(uploadInput.files).forEach((file, index) => {
+imageInput.addEventListener('change', function () {
+  const file = this.files[0];
+  if (file) {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.alt = `Wardrobe item ${index + 1}`;
-      img.style.width = "150px";
-      img.style.margin = "10px";
-      previewContainer.appendChild(img);
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
     };
     reader.readAsDataURL(file);
-  });
+  }
 });
 
-function goToNextPage() {
-  alert("You can now move to outfit suggestions or selection!");
-  // Redirect if you have suggestions.html ready:
-  // window.location.href = "suggestions.html";
+function submitImage() {
+  alert("Image uploaded successfully! (This is a demo)");
+  // You can add a real upload handler here or route to analysis
 }
