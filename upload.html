@@ -24,9 +24,15 @@
   </div>
 
   <script>
+    // Function to handle image uploads
     function uploadImages() {
       const input = document.getElementById("uploadInput");
       const files = input.files;
+
+      if (files.length === 0) {
+        alert("Please select at least one image to upload.");
+        return;
+      }
 
       for (let file of files) {
         const reader = new FileReader();
@@ -73,30 +79,39 @@
       }
     }
 
+    // Function to clear the wardrobe
     function clearWardrobe() {
       localStorage.removeItem("wardrobe");
       document.getElementById("previewContainer").innerHTML = "";
+      alert("Wardrobe has been cleared.");
     }
 
-    // Load wardrobe on startup
+    // Load wardrobe on page load
     window.onload = function () {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
-      for (let item of wardrobe) {
-        const container = document.createElement("div");
-        container.className = "preview-item";
+      const previewContainer = document.getElementById("previewContainer");
 
-        const img = document.createElement("img");
-        img.src = item.image;
+      if (wardrobe.length === 0) {
+        previewContainer.innerHTML = "<p>No wardrobe items available.</p>";
+      } else {
+        for (let item of wardrobe) {
+          const container = document.createElement("div");
+          container.className = "preview-item";
 
-        const label = document.createElement("span");
-        label.textContent = item.category;
-        label.style.fontWeight = "bold";
+          const img = document.createElement("img");
+          img.src = item.image;
 
-        container.appendChild(img);
-        container.appendChild(label);
-        document.getElementById("previewContainer").appendChild(container);
+          const label = document.createElement("span");
+          label.textContent = item.category;
+          label.style.fontWeight = "bold";
+
+          container.appendChild(img);
+          container.appendChild(label);
+          previewContainer.appendChild(container);
+        }
       }
     };
   </script>
 </body>
 </html>
+
