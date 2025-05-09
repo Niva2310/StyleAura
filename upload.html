@@ -7,10 +7,12 @@
   <link rel="stylesheet" href="update.css" />
 </head>
 <body>
-  <h1>Upload Your Wardrobe 👕👗</h1>
-  <div class="upload-box">
+  <header>
+    <h1>Upload Your Wardrobe 👕👗</h1>
     <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
+  </header>
 
+  <div class="upload-box">
     <label class="custom-file-upload">
       <input type="file" id="uploadInput" multiple accept="image/*" style="display: none;" />
       📸 Choose Image(s)
@@ -24,7 +26,6 @@
   </div>
 
   <script>
-    // Function to handle image uploads
     function uploadImages() {
       const input = document.getElementById("uploadInput");
       const files = input.files;
@@ -79,14 +80,12 @@
       }
     }
 
-    // Function to clear the wardrobe
     function clearWardrobe() {
       localStorage.removeItem("wardrobe");
       document.getElementById("previewContainer").innerHTML = "";
       alert("Wardrobe has been cleared.");
     }
 
-    // Load wardrobe on page load
     window.onload = function () {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
       const previewContainer = document.getElementById("previewContainer");
@@ -114,4 +113,3 @@
   </script>
 </body>
 </html>
-
