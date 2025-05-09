@@ -1,64 +1,143 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>StyleAura - Your AI Fashion Buddy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Your Wardrobe – StyleAura</title>
 
+  <style>
     body {
-      background: linear-gradient(to right, #f9f9f9, #ffe0f0);
-      color: #333;
-      text-align: center;
-      padding: 50px 20px;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fbeffb, #f0f8ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
     }
 
     h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      color: #D63384;
+      color: #333;
+      margin-bottom: 0.5rem;
     }
 
     p {
-      font-size: 1.2rem;
-      margin-bottom: 40px;
+      color: #666;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .upload-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .custom-file-upload {
+      display: inline-block;
+      padding: 1rem 2rem;
+      border: 2px dashed #888;
+      border-radius: 12px;
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .custom-file-upload:hover {
+      background-color: #f0f0f0;
+      border-color: #555;
+    }
+
+    #previewContainer img {
+      max-width: 100px;
+      margin: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
     }
 
     .btn {
-      padding: 15px 30px;
-      background-color: #D63384;
-      color: white;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 30px;
+      border-radius: 8px;
+      background-color: #ec6ca3;
+      color: white;
       font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      transition: background-color 0.3s ease;
+      margin-right: 10px;
     }
 
     .btn:hover {
-      background-color: #C2185B;
-      transform: scale(1.05);
-      /* Slight scale effect on hover */
+      background-color: #c45389;
     }
   </style>
 </head>
-
 <body>
+  <h1>Upload Your Wardrobe 👕👗</h1>
+  <div class="upload-box">
+    <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
 
-  <h1>Welcome to StyleAura 👗</h1>
-  <p>Your personal AI stylist that scans, styles, and slays with you!</p>
-  <button class="btn" onclick="location.href='upload.html'">Scan Your Wardrobe</button>
+    <label class="custom-file-upload">
+      <input type="file" id="uploadInput" multiple accept="image/*" style="display: none;" />
+      📸 Choose Image(s)
+    </label>
 
+    <br>
+    <button class="btn" onclick="uploadImages()">Upload</button>
+    <button class="btn" onclick="clearWardrobe()">Clear Wardrobe</button>
+
+    <div id="previewContainer"></div>
+  </div>
+
+  <script>
+    function uploadImages() {
+      const input = document.getElementById("uploadInput");
+      const files = input.files;
+
+      for (let file of files) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          const base64Image = event.target.result;
+
+          // Save to localStorage
+          let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+          wardrobe.push({ image: base64Image, fileName: file.name });
+          localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
+
+          // Show preview
+          const img = document.createElement("img");
+          img.src = base64Image;
+          document.getElementById("previewContainer").appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearWardrobe() {
+      localStorage.removeItem("wardrobe");
+      document.getElementById("previewContainer").innerHTML = "";
+    }
+
+    // Load images on page load
+    window.onload = function () {
+      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      for (let item of wardrobe) {
+        const img = document.createElement("img");
+        img.src = item.image;
+        document.getElementById("previewContainer").appendChild(img);
+      }
+    };
+  </script>
 </body>
-
 </html>
+
