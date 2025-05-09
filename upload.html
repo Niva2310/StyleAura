@@ -26,6 +26,7 @@
   </div>
 
   <script>
+    // Upload function to handle file selection and preview
     function uploadImages() {
       const input = document.getElementById("uploadInput");
       const files = input.files;
@@ -47,6 +48,7 @@
           const img = document.createElement("img");
           img.src = base64Image;
 
+          // Select Category Dropdown
           const select = document.createElement("select");
           select.innerHTML = `
             <option value="">Select Category</option>
@@ -57,6 +59,7 @@
             <option value="Outerwear">Outerwear</option>
           `;
 
+          // On category change, save image in local storage with category
           select.onchange = function () {
             if (select.value !== "") {
               let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
@@ -80,12 +83,14 @@
       }
     }
 
+    // Clear wardrobe function
     function clearWardrobe() {
       localStorage.removeItem("wardrobe");
       document.getElementById("previewContainer").innerHTML = "";
       alert("Wardrobe has been cleared.");
     }
 
+    // Load wardrobe items from localStorage on page load
     window.onload = function () {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
       const previewContainer = document.getElementById("previewContainer");
@@ -101,7 +106,7 @@
           img.src = item.image;
 
           const label = document.createElement("span");
-          label.textContent = item.category;
+          label.textContent = `${item.category} - ${item.fileName}`;
           label.style.fontWeight = "bold";
 
           container.appendChild(img);
