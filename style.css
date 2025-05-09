@@ -29,3 +29,23 @@ h1 {
   max-height: 100px;
   object-fit: cover;
 }
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.preview-item img {
+  max-width: 100px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.preview-item select {
+  padding: 5px 10px;
+  border-radius: 6px;
+}
