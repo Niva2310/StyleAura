@@ -61,6 +61,7 @@
       margin-top: 1rem;
       max-width: 100%;
       border-radius: 8px;
+      display: none;
     }
 
     .btn {
@@ -81,21 +82,51 @@
   </style>
 </head>
 <body>
+  <h1>Upload Your Wardrobe 👕👗</h1>
   <div class="upload-box">
-    <h1>Upload Your Wardrobe</h1>
     <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
 
     <label class="custom-file-upload">
-      <input type="file" id="imageInput" accept="image/*" />
-      📸 Choose Image
+      <input type="file" id="imageInput" accept="image/*" multiple onchange="previewImages()" />
+      📸 Choose Images
     </label>
 
-    <img id="preview" alt="Image Preview" style="display: none;" />
+    <div id="previewContainer"></div>
 
+    <button onclick="goToNextPage()">Continue</button>
     <button class="btn" onclick="submitImage()">Upload</button>
   </div>
 
-  <script src="js/upload.js"></script>
+  <script src="upload.js"></script>
+  <script>
+    function previewImages() {
+      const previewContainer = document.getElementById('previewContainer');
+      previewContainer.innerHTML = ""; // Clear previous previews
+      const files = document.getElementById('imageInput').files;
+
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.style.maxWidth = '100px';
+          img.style.margin = '10px';
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function goToNextPage() {
+      // Logic to go to the next page
+      alert('Next page logic goes here');
+    }
+
+    function submitImage() {
+      // Logic to handle the image submission
+      alert('Image upload logic goes here');
+    }
+  </script>
 </body>
 </html>
 
