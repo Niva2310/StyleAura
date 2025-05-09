@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Your Wardrobe – StyleAura</title>
-  <link rel="stylesheet" href="css/style.css" />
+
   <style>
     body {
       margin: 0;
@@ -26,6 +26,7 @@
     p {
       color: #666;
       margin-bottom: 2rem;
+      text-align: center;
     }
 
     .upload-box {
@@ -33,13 +34,9 @@
       border-radius: 16px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       padding: 2rem;
-      max-width: 500px;
+      max-width: 600px;
       width: 100%;
       text-align: center;
-    }
-
-    .upload-box input[type="file"] {
-      display: none;
     }
 
     .custom-file-upload {
@@ -50,18 +47,12 @@
       background-color: #fafafa;
       cursor: pointer;
       transition: 0.3s ease;
+      margin-bottom: 1rem;
     }
 
     .custom-file-upload:hover {
       background-color: #f0f0f0;
       border-color: #555;
-    }
-
-    #preview {
-      margin-top: 1rem;
-      max-width: 100%;
-      border-radius: 8px;
-      display: none;
     }
 
     .btn {
@@ -74,10 +65,31 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin-right: 10px;
     }
 
     .btn:hover {
       background-color: #c45389;
+    }
+
+    .preview-item {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .preview-item img {
+      max-width: 100px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .preview-item select {
+      padding: 5px 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -87,46 +99,91 @@
     <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
 
     <label class="custom-file-upload">
-      <input type="file" id="imageInput" accept="image/*" multiple onchange="previewImages()" />
-      📸 Choose Images
+      <input type="file" id="uploadInput" multiple accept="image/*" style="display: none;" />
+      📸 Choose Image(s)
     </label>
 
-    <div id="previewContainer"></div>
+    <br>
+    <button class="btn" onclick="uploadImages()">Upload</button>
+    <button class="btn" onclick="clearWardrobe()">Clear Wardrobe</button>
 
-    <button onclick="goToNextPage()">Continue</button>
-    <button class="btn" onclick="submitImage()">Upload</button>
+    <div id="previewContainer"></div>
   </div>
 
-  <script src="upload.js"></script>
   <script>
-    function previewImages() {
-      const previewContainer = document.getElementById('previewContainer');
-      previewContainer.innerHTML = ""; // Clear previous previews
-      const files = document.getElementById('imageInput').files;
+    function uploadImages() {
+      const input = document.getElementById("uploadInput");
+      const files = input.files;
 
-      for (const file of files) {
+      for (let file of files) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.style.maxWidth = '100px';
-          img.style.margin = '10px';
-          previewContainer.appendChild(img);
+
+        reader.onload = function (event) {
+          const base64Image = event.target.result;
+
+          const container = document.createElement("div");
+          container.className = "preview-item";
+
+          const img = document.createElement("img");
+          img.src = base64Image;
+
+          const select = document.createElement("select");
+          select.innerHTML = `
+            <option value="">Select Category</option>
+            <option value="Top">Top</option>
+            <option value="Bottom">Bottom</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Accessory">Accessory</option>
+            <option value="Outerwear">Outerwear</option>
+          `;
+
+          select.onchange = function () {
+            if (select.value !== "") {
+              let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+              wardrobe.push({
+                image: base64Image,
+                fileName: file.name,
+                category: select.value
+              });
+              localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
+              select.disabled = true;
+              alert(`Saved as ${select.value}`);
+            }
+          };
+
+          container.appendChild(img);
+          container.appendChild(select);
+          document.getElementById("previewContainer").appendChild(container);
         };
+
         reader.readAsDataURL(file);
       }
     }
 
-    function goToNextPage() {
-      // Logic to go to the next page
-      alert('Next page logic goes here');
+    function clearWardrobe() {
+      localStorage.removeItem("wardrobe");
+      document.getElementById("previewContainer").innerHTML = "";
     }
 
-    function submitImage() {
-      // Logic to handle the image submission
-      alert('Image upload logic goes here');
-    }
+    // Load wardrobe on startup
+    window.onload = function () {
+      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      for (let item of wardrobe) {
+        const container = document.createElement("div");
+        container.className = "preview-item";
+
+        const img = document.createElement("img");
+        img.src = item.image;
+
+        const label = document.createElement("span");
+        label.textContent = item.category;
+        label.style.fontWeight = "bold";
+
+        container.appendChild(img);
+        container.appendChild(label);
+        document.getElementById("previewContainer").appendChild(container);
+      }
+    };
   </script>
 </body>
 </html>
-
