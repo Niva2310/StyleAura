@@ -1,20 +1,101 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upload Wardrobe - StyleAura</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Upload Your Wardrobe – StyleAura</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fbeffb, #f0f8ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .upload-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .upload-box input[type="file"] {
+      display: none;
+    }
+
+    .custom-file-upload {
+      display: inline-block;
+      padding: 1rem 2rem;
+      border: 2px dashed #888;
+      border-radius: 12px;
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .custom-file-upload:hover {
+      background-color: #f0f0f0;
+      border-color: #555;
+    }
+
+    #preview {
+      margin-top: 1rem;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .btn {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ec6ca3;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #c45389;
+    }
+  </style>
 </head>
 <body>
-  <h1>Upload Your Wardrobe 👕👗</h1>
+  <div class="upload-box">
+    <h1>Upload Your Wardrobe</h1>
+    <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
 
-  <input type="file" id="uploadInput" multiple accept="image/*" />
-  <div id="previewContainer"></div>
+    <label class="custom-file-upload">
+      <input type="file" id="imageInput" accept="image/*" />
+      📸 Choose Image
+    </label>
 
-  <button onclick="goToNextPage()">Continue</button>
+    <img id="preview" alt="Image Preview" style="display: none;" />
 
-  <script src="upload.js"></script>
+    <button class="btn" onclick="submitImage()">Upload</button>
+  </div>
+
+  <script src="js/upload.js"></script>
 </body>
 </html>
+
