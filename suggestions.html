@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleAura – Outfit Suggestions</title>
+  <link rel="stylesheet" href="suggestions.css" />
+</head>
+<body>
+  <header>
+    <h1>✨ Your Outfit Suggestion ✨</h1>
+    <p class="tagline">Based on what you uploaded to your wardrobe</p>
+  </header>
+
+  <main class="suggestion-box">
+    <div id="outfitContainer">
+      <p>Click below to generate your look!</p>
+    </div>
+    <button class="btn" onclick="generateOutfit()">✨ Generate New Outfit</button>
+  </main>
+
+  <script>
+    function generateOutfit() {
+      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      const categories = {
+        Top: [],
+        Bottom: [],
+        Footwear: [],
+        Accessory: [],
+        Outerwear: []
+      };
+
+      // Group images by category
+      wardrobe.forEach(item => {
+        if (categories[item.category]) {
+          categories[item.category].push(item);
+        }
+      });
+
+      const outfit = {};
+      for (let category in categories) {
+        const items = categories[category];
+        if (items.length > 0) {
+          const randomItem = items[Math.floor(Math.random() * items.length)];
+          outfit[category] = randomItem;
+        }
+      }
+
+      // Display outfit
+      const container = document.getElementById("outfitContainer");
+      container.innerHTML = "";
+
+      for (let key in outfit) {
+        const item = outfit[key];
+        const section = document.createElement("div");
+        section.className = "outfit-item";
+
+        const label = document.createElement("h3");
+        label.textContent = key;
+
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = key;
+
+        section.appendChild(label);
+        section.appendChild(img);
+        container.appendChild(section);
+      }
+
+      if (Object.keys(outfit).length === 0) {
+        container.innerHTML = "<p>No wardrobe items available to suggest an outfit.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
