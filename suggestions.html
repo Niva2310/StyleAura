@@ -46,10 +46,16 @@
     <div id="savedLooksContainer"></div>
   </div>
 
+  <div class="smart-suggestions">
+    <h3>🧠 Smart Suggestions</h3>
+    <ul id="suggestionList"></ul>
+  </div>
+
   <script>
     function generateOutfit() {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
       const container = document.getElementById("outfitContainer");
+      const suggestionList = document.getElementById("suggestionList");
 
       if (wardrobe.length === 0) {
         container.innerHTML = "<p>No wardrobe items available.</p>";
@@ -72,8 +78,12 @@
         if (!item.category || !item.image) return;
         const cat = item.category.toLowerCase();
         if (categories[cat]) {
-          // (Optional: add occasion/season check here if your data includes it)
-          categories[cat].push(item);
+          if (
+            (!item.occasion || item.occasion === occasion || occasion === "") &&
+            (!item.season || item.season === season || season === "")
+          ) {
+            categories[cat].push(item);
+          }
         }
       });
 
@@ -86,7 +96,6 @@
       }
 
       container.innerHTML = "";
-
       if (Object.keys(selectedItems).length === 0) {
         container.innerHTML = "<p>No wardrobe items available for selected filters.</p>";
         return;
@@ -114,6 +123,8 @@
         section.appendChild(deleteBtn);
         container.appendChild(section);
       }
+
+      generateSmartSuggestions(wardrobe);
     }
 
     function deleteItem(imageSrc) {
@@ -133,6 +144,32 @@
       savedLook.className = "saved-look";
       savedLook.innerHTML = container.innerHTML;
       savedContainer.appendChild(savedLook);
+    }
+
+    function generateSmartSuggestions(wardrobe) {
+      const list = document.getElementById("suggestionList");
+      list.innerHTML = "";
+
+      const tops = wardrobe.filter(item => item.category?.toLowerCase() === "top");
+      const bottoms = wardrobe.filter(item => item.category?.toLowerCase() === "bottom");
+      const accessories = wardrobe.filter(item => item.category?.toLowerCase() === "accessory");
+
+      const suggestions = [];
+
+      if (tops.length === 0) suggestions.push("Consider adding a few stylish tops.");
+      if (bottoms.length < 2) suggestions.push("Add more bottoms for variety.");
+      if (accessories.length === 0) suggestions.push("Accessories complete your look—add some!");
+      if (wardrobe.length > 20) suggestions.push("Declutter items you rarely wear.");
+
+      if (suggestions.length === 0) {
+        suggestions.push("Your wardrobe looks well-balanced! ✨");
+      }
+
+      suggestions.forEach(s => {
+        const li = document.createElement("li");
+        li.textContent = s;
+        list.appendChild(li);
+      });
     }
   </script>
 </body>
