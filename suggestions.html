@@ -2,49 +2,166 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StyleAura – Outfit Suggestions</title>
   <link rel="stylesheet" href="suggestions.css" />
 </head>
 <body>
   <header>
     <h1>✨ Your Outfit Suggestion ✨</h1>
-    <p class="tagline">Based on your wardrobe, occasion, and season</p>
+    <p class="tagline">Based on what you uploaded to your wardrobe</p>
   </header>
 
   <section class="filters">
     <select id="occasionFilter">
-      <option value="">Select Occasion</option>
-      <option value="Casual">Casual</option>
-      <option value="Formal">Formal</option>
-      <option value="Party">Party</option>
-      <option value="Work">Work</option>
+      <option value="">🎯 Occasion</option>
+      <option value="casual">Casual</option>
+      <option value="formal">Formal</option>
+      <option value="party">Party</option>
+      <option value="ethnic">Ethnic</option>
     </select>
+
     <select id="seasonFilter">
-      <option value="">Select Season</option>
-      <option value="Summer">Summer</option>
-      <option value="Winter">Winter</option>
-      <option value="Rainy">Rainy</option>
+      <option value="">🌤️ Season</option>
+      <option value="summer">Summer</option>
+      <option value="winter">Winter</option>
+      <option value="rainy">Rainy</option>
     </select>
-    <button onclick="generateOutfit()">✨ Generate New Outfit</button>
+    
+    <button class="btn" onclick="generateOutfit()">✨ Generate Outfit</button>
+    <button class="btn save-btn" onclick="saveCurrentLook()">💾 Save Look</button>
   </section>
 
   <main class="suggestion-box">
     <div id="outfitContainer">
-      <p>Select filters and click generate to view suggestions.</p>
+      <p>Click generate to get your outfit!</p>
+    </div>
+    <div id="savedLooksContainer">
+      <h3>📦 Saved Looks</h3>
     </div>
   </main>
 
-  <div class="actions">
-    <button onclick="saveLook()">💾 Save Look</button>
-  </div>
+  <script>
+    function generateOutfit() {
+      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      const occasion = document.getElementById("occasionFilter").value;
+      const season = document.getElementById("seasonFilter").value;
 
-  <div class="saved-looks">
-    <h2>Saved Looks</h2>
-    <div id="savedLooksContainer"></div>
-  </div>
+      const categories = {
+        Top: [],
+        Bottom: [],
+        Footwear: [],
+        Accessory: [],
+        Outerwear: []
+      };
 
-  <script src="suggestions.js"></script>
+      wardrobe.forEach(item => {
+        if (
+          categories[item.category] &&
+          (occasion === "" || item.occasion === occasion) &&
+          (season === "" || item.season === season)
+        ) {
+          categories[item.category].push(item);
+        }
+      });
+
+      const outfit = {};
+      for (let cat in categories) {
+        const items = categories[cat];
+        if (items.length > 0) {
+          outfit[cat] = items[Math.floor(Math.random() * items.length)];
+        }
+      }
+
+      const container = document.getElementById("outfitContainer");
+      container.innerHTML = "";
+
+      if (Object.keys(outfit).length === 0) {
+        container.innerHTML = "<p>No items match your filters.</p>";
+        return;
+      }
+
+      for (let key in outfit) {
+        const item = outfit[key];
+        const section = document.createElement("div");
+        section.className = "outfit-item";
+
+        const label = document.createElement("h3");
+        label.textContent = key;
+
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = key;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-btn";
+        removeBtn.textContent = "🗑️ Remove";
+        removeBtn.onclick = () => removeItem(item);
+
+        section.appendChild(label);
+        section.appendChild(img);
+        section.appendChild(removeBtn);
+
+        container.appendChild(section);
+      }
+
+      localStorage.setItem("currentOutfit", JSON.stringify(outfit));
+    }
+
+    function removeItem(itemToRemove) {
+      let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      wardrobe = wardrobe.filter(item => item.image !== itemToRemove.image);
+      localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
+      generateOutfit();
+    }
+
+    function saveCurrentLook() {
+      const outfit = JSON.parse(localStorage.getItem("currentOutfit")) || {};
+      if (Object.keys(outfit).length === 0) {
+        alert("No outfit to save.");
+        return;
+      }
+
+      let saved = JSON.parse(localStorage.getItem("savedLooks")) || [];
+      saved.push(outfit);
+      localStorage.setItem("savedLooks", JSON.stringify(saved));
+      displaySavedLooks();
+      alert("Look saved!");
+    }
+
+    function displaySavedLooks() {
+      const saved = JSON.parse(localStorage.getItem("savedLooks")) || [];
+      const container = document.getElementById("savedLooksContainer");
+      container.innerHTML = "<h3>📦 Saved Looks</h3>";
+
+      saved.forEach((look, idx) => {
+        const lookDiv = document.createElement("div");
+        lookDiv.className = "saved-look";
+
+        for (let part in look) {
+          const img = document.createElement("img");
+          img.src = look[part].image;
+          img.alt = part;
+          lookDiv.appendChild(img);
+        }
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "remove-btn";
+        delBtn.textContent = "❌ Delete";
+        delBtn.onclick = () => {
+          saved.splice(idx, 1);
+          localStorage.setItem("savedLooks", JSON.stringify(saved));
+          displaySavedLooks();
+        };
+
+        lookDiv.appendChild(delBtn);
+        container.appendChild(lookDiv);
+      });
+    }
+
+    // Initialize on page load
+    displaySavedLooks();
+  </script>
 </body>
 </html>
 
