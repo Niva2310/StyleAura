@@ -1,18 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StyleAura – Outfit Suggestions</title>
-  <link rel="stylesheet" href="suggestions.css" />
-</head>
+<!-- Keep the <head> same as before -->
 <body>
   <header>
     <h1>✨ Your Outfit Suggestion ✨</h1>
     <p class="tagline">Based on your wardrobe and vibe</p>
   </header>
 
-  <div class="filters">
+  <section class="filters">
     <label for="occasion">Occasion:</label>
     <select id="occasion">
       <option value="">Any</option>
@@ -29,11 +22,11 @@
       <option value="winter">Winter</option>
       <option value="monsoon">Monsoon</option>
     </select>
-  </div>
+  </section>
 
   <main class="suggestion-box">
     <div id="outfitContainer">
-      <p>Click below to generate your look!</p>
+      <p class="prompt">Click below to generate your look!</p>
     </div>
     <div class="btns">
       <button class="btn" onclick="generateOutfit()">✨ Generate New Outfit</button>
@@ -41,50 +34,37 @@
     </div>
   </main>
 
-  <div class="saved-looks">
+  <section class="saved-looks">
     <h3>💡 Saved Looks</h3>
     <div id="savedLooksContainer"></div>
-  </div>
-
-  <div class="smart-suggestions">
-    <h3>🧠 Smart Suggestions</h3>
-    <ul id="suggestionList"></ul>
-  </div>
+  </section>
 
   <script>
     function generateOutfit() {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
       const container = document.getElementById("outfitContainer");
-      const suggestionList = document.getElementById("suggestionList");
-
-      if (wardrobe.length === 0) {
-        container.innerHTML = "<p>No wardrobe items available.</p>";
-        return;
-      }
-
       const occasion = document.getElementById("occasion").value;
       const season = document.getElementById("season").value;
 
+      if (!wardrobe.length) {
+        container.innerHTML = "<p class='message'>👚 No wardrobe items found.</p>";
+        return;
+      }
+
       const categories = {
-        top: [],
-        bottom: [],
-        dress: [],
-        footwear: [],
-        accessory: [],
-        outerwear: []
+        top: [], bottom: [], dress: [],
+        footwear: [], accessory: [], outerwear: []
       };
 
       wardrobe.forEach(item => {
         if (!item.category || !item.image) return;
+        if (
+          (occasion && item.occasion !== occasion) ||
+          (season && item.season !== season)
+        ) return;
+
         const cat = item.category.toLowerCase();
-        if (categories[cat]) {
-          if (
-            (!item.occasion || item.occasion === occasion || occasion === "") &&
-            (!item.season || item.season === season || season === "")
-          ) {
-            categories[cat].push(item);
-          }
-        }
+        if (categories[cat]) categories[cat].push(item);
       });
 
       const selectedItems = {};
@@ -96,35 +76,25 @@
       }
 
       container.innerHTML = "";
+
       if (Object.keys(selectedItems).length === 0) {
-        container.innerHTML = "<p>No wardrobe items available for selected filters.</p>";
+        container.innerHTML = `<p class='message'>No matching items found for filters. Try different options.</p>`;
         return;
       }
 
-      for (let key in selectedItems) {
+      for (const key in selectedItems) {
         const item = selectedItems[key];
         const section = document.createElement("div");
         section.className = "outfit-item";
 
-        const label = document.createElement("h3");
-        label.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+        section.innerHTML = `
+          <h3>${key.charAt(0).toUpperCase() + key.slice(1)}</h3>
+          <img src="${item.image}" alt="${key}" />
+          <button class="btn delete-btn" onclick="deleteItem('${item.image}')">❌</button>
+        `;
 
-        const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = key;
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "❌";
-        deleteBtn.className = "btn";
-        deleteBtn.onclick = () => deleteItem(item.image);
-
-        section.appendChild(label);
-        section.appendChild(img);
-        section.appendChild(deleteBtn);
         container.appendChild(section);
       }
-
-      generateSmartSuggestions(wardrobe);
     }
 
     function deleteItem(imageSrc) {
@@ -136,8 +106,7 @@
 
     function saveLook() {
       const container = document.getElementById("outfitContainer");
-      const hasImage = container.querySelector("img");
-      if (!hasImage) return alert("Generate an outfit first!");
+      if (!container.querySelector("img")) return alert("Please generate an outfit first!");
 
       const savedContainer = document.getElementById("savedLooksContainer");
       const savedLook = document.createElement("div");
@@ -145,32 +114,5 @@
       savedLook.innerHTML = container.innerHTML;
       savedContainer.appendChild(savedLook);
     }
-
-    function generateSmartSuggestions(wardrobe) {
-      const list = document.getElementById("suggestionList");
-      list.innerHTML = "";
-
-      const tops = wardrobe.filter(item => item.category?.toLowerCase() === "top");
-      const bottoms = wardrobe.filter(item => item.category?.toLowerCase() === "bottom");
-      const accessories = wardrobe.filter(item => item.category?.toLowerCase() === "accessory");
-
-      const suggestions = [];
-
-      if (tops.length === 0) suggestions.push("Consider adding a few stylish tops.");
-      if (bottoms.length < 2) suggestions.push("Add more bottoms for variety.");
-      if (accessories.length === 0) suggestions.push("Accessories complete your look—add some!");
-      if (wardrobe.length > 20) suggestions.push("Declutter items you rarely wear.");
-
-      if (suggestions.length === 0) {
-        suggestions.push("Your wardrobe looks well-balanced! ✨");
-      }
-
-      suggestions.forEach(s => {
-        const li = document.createElement("li");
-        li.textContent = s;
-        list.appendChild(li);
-      });
-    }
   </script>
 </body>
-</html>
