@@ -5,6 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Your Wardrobe – StyleAura</title>
   <link rel="stylesheet" href="update.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #ff9f00;
+      color: white;
+      padding: 50px;
+      text-align: center;
+      border-bottom: 4px solid #ff7b00;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    .upload-box {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      text-align: center;
+    }
+    .custom-file-upload {
+      background-color: #ff7b00;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: background-color 0.3s;
+    }
+    .custom-file-upload:hover {
+      background-color: #ff6f00;
+    }
+    .btn {
+      background-color: #ff7b00;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #ff6f00;
+    }
+    .preview-item {
+      margin-top: 20px;
+      border: 2px solid #ff9f00;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #fff8e1;
+    }
+    .preview-item img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    select {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #f4f4f9;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -26,7 +99,7 @@
   </div>
 
   <script>
-    // Upload function to handle file selection and preview
+    // Function to handle file upload and preview
     function uploadImages() {
       const input = document.getElementById("uploadInput");
       const files = input.files;
@@ -48,7 +121,6 @@
           const img = document.createElement("img");
           img.src = base64Image;
 
-          // Select Category Dropdown
           const select = document.createElement("select");
           select.innerHTML = `
             <option value="">Select Category</option>
@@ -59,7 +131,6 @@
             <option value="Outerwear">Outerwear</option>
           `;
 
-          // On category change, save image in local storage with category
           select.onchange = function () {
             if (select.value !== "") {
               let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
