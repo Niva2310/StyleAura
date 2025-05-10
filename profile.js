@@ -1,13 +1,13 @@
 document.getElementById("profileForm").addEventListener("submit", function(event) {
-  event.preventDefault(); // Prevent the form from reloading the page
+  event.preventDefault(); // Prevent form from submitting in the traditional way
 
-  // Get form values
+  // Get values from the form
   const bodyType = document.querySelector("[name='bodyType']").value;
   const colors = document.querySelector("[name='colors']").value.split(",").map(color => color.trim());
   const stylePref = document.querySelector("[name='stylePref']").value;
   const occasions = document.querySelector("[name='occasions']").value.split(",").map(occasion => occasion.trim());
 
-  // Create the profile object
+  // Create an object to represent the user's profile
   const userProfile = {
     bodyType,
     favoriteColors: colors,
@@ -15,12 +15,12 @@ document.getElementById("profileForm").addEventListener("submit", function(event
     occasions
   };
 
-  // Save to localStorage
+  // Save the user profile to localStorage
   localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
-  // Confirm profile saved
+  // Alert the user that their profile has been saved
   alert("Profile saved successfully!");
 
-  // Optionally, you can reset the form
+  // Optionally, reset the form after submission
   document.getElementById("profileForm").reset();
 });
