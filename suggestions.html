@@ -4,7 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StyleAura – Outfit Suggestions</title>
-  <link rel="stylesheet" href="suggestions.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9fb;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(to right, #ff9800, #ff5722);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      border-bottom: 4px solid #e65100;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    .suggestion-box {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .btn {
+      background: #ff9800;
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #e68900;
+    }
+
+    #outfitContainer {
+      margin-top: 1.5rem;
+    }
+
+    .outfit-item {
+      display: inline-block;
+      margin: 1rem;
+      text-align: center;
+    }
+
+    .outfit-item img {
+      width: 150px;
+      height: auto;
+      border-radius: 10px;
+      border: 2px solid #ff9800;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .outfit-item h3 {
+      margin: 0.5rem 0;
+      color: #ff5722;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -21,56 +96,62 @@
 
   <script>
     function generateOutfit() {
-      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
-      const categories = {
-        Top: [],
-        Bottom: [],
-        Footwear: [],
-        Accessory: [],
-        Outerwear: []
-      };
+      try {
+        const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+        const categories = {
+          Top: [],
+          Bottom: [],
+          Footwear: [],
+          Accessory: [],
+          Outerwear: []
+        };
 
-      // Group images by category
-      wardrobe.forEach(item => {
-        if (categories[item.category]) {
-          categories[item.category].push(item);
+        wardrobe.forEach(item => {
+          if (item && item.category && item.image && categories[item.category]) {
+            categories[item.category].push(item);
+          }
+        });
+
+        const outfit = {};
+        for (let category in categories) {
+          const items = categories[category];
+          if (items.length > 0) {
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+            outfit[category] = randomItem;
+          }
         }
-      });
 
-      const outfit = {};
-      for (let category in categories) {
-        const items = categories[category];
-        if (items.length > 0) {
-          const randomItem = items[Math.floor(Math.random() * items.length)];
-          outfit[category] = randomItem;
+        const container = document.getElementById("outfitContainer");
+        container.innerHTML = "";
+
+        if (Object.keys(outfit).length === 0) {
+          container.innerHTML = "<p>No wardrobe items available to suggest an outfit.</p>";
+          return;
         }
-      }
 
-      // Display outfit
-      const container = document.getElementById("outfitContainer");
-      container.innerHTML = "";
+        for (let key in outfit) {
+          const item = outfit[key];
+          const section = document.createElement("div");
+          section.className = "outfit-item";
 
-      for (let key in outfit) {
-        const item = outfit[key];
-        const section = document.createElement("div");
-        section.className = "outfit-item";
+          const label = document.createElement("h3");
+          label.textContent = key;
 
-        const label = document.createElement("h3");
-        label.textContent = key;
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.alt = key;
 
-        const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = key;
-
-        section.appendChild(label);
-        section.appendChild(img);
-        container.appendChild(section);
-      }
-
-      if (Object.keys(outfit).length === 0) {
-        container.innerHTML = "<p>No wardrobe items available to suggest an outfit.</p>";
+          section.appendChild(label);
+          section.appendChild(img);
+          container.appendChild(section);
+        }
+      } catch (error) {
+        console.error("Error generating outfit:", error);
+        document.getElementById("outfitContainer").innerHTML =
+          "<p>There was an error generating your outfit. Please check your wardrobe data.</p>";
       }
     }
   </script>
 </body>
 </html>
+
