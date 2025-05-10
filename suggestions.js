@@ -6,11 +6,13 @@ const wardrobe = {
     shoes: ["Sneakers", "Heels", "Boots"]
 };
 
-// Sample filters
-const userPreferences = {
+// Sample filters and profile data (to be loaded from localStorage)
+let userProfile = JSON.parse(localStorage.getItem('userProfile')) || {
     season: "summer", // or "winter"
     occasion: "casual", // "formal", "party"
-    style: "minimalist"
+    style: "minimalist",
+    bodyType: "hourglass", // Example: "hourglass", "pear", "rectangle"
+    favoriteColors: ["white", "black", "navy"] // Example color preferences
 };
 
 // Outfit generation logic
@@ -39,32 +41,53 @@ function getRandomShoe() {
     return wardrobe.shoes[Math.floor(Math.random() * wardrobe.shoes.length)];
 }
 
-// Filter outfits
+// Filter outfits based on user preferences
 function filterOutfits(outfits, preferences) {
-    // Dummy logic: real logic would match colors, fabrics, etc.
     return outfits.filter(o => {
-        return preferences.occasion === "casual" || preferences.season === "summer"; 
+        // Apply style and occasion-based filtering
+        let isValidStyle = o.top.toLowerCase().includes(preferences.style) || o.bottom.toLowerCase().includes(preferences.style);
+        let isValidSeason = preferences.season === "summer" && (o.top.includes("Shirt") || o.bottom.includes("Jeans"));
+        let isValidOccasion = preferences.occasion === "casual" || preferences.occasion === "formal";
+
+        return isValidStyle && isValidSeason && isValidOccasion;
     });
 }
 
-// Smart suggestions
+// Smart suggestions based on profile data (body type, colors, missing items)
 function generateSuggestions() {
     const suggestions = [];
 
-    if (!wardrobe.tops.includes("Neutral Tank Top")) {
-        suggestions.push("Add a Neutral Tank Top for layering.");
+    // Check body type for fitting suggestions
+    if (userProfile.bodyType === "hourglass") {
+        suggestions.push("Try form-fitting tops that accentuate your waist.");
+    } else if (userProfile.bodyType === "pear") {
+        suggestions.push("Consider A-line skirts to balance your proportions.");
     }
-    if (wardrobe.bottoms.length < 2) {
-        suggestions.push("Consider buying more versatile bottoms.");
+
+    // Color suggestions based on preferences
+    if (!wardrobe.tops.some(top => userProfile.favoriteColors.some(color => top.toLowerCase().includes(color)))) {
+        suggestions.push("Add tops in your favorite colors, like white, black, or navy.");
     }
-    if (wardrobe.tops.length > 10) {
-        suggestions.push("Declutter rarely worn tops.");
+
+    // Check if formal items are missing
+    if (!wardrobe.tops.some(top => top.toLowerCase().includes("blouse"))) {
+        suggestions.push("Consider adding a formal blouse to your wardrobe.");
+    }
+
+    // Seasonal items check (e.g., add summer or winter-specific pieces)
+    if (userProfile.season === "summer" && !wardrobe.tops.some(top => top.toLowerCase().includes("tank"))) {
+        suggestions.push("Add a neutral tank top for layering in summer.");
+    }
+
+    // Check for versatility of bottoms
+    if (wardrobe.bottoms.length < 3) {
+        suggestions.push("Consider buying more versatile bottoms for different occasions.");
     }
 
     return suggestions;
 }
 
 // Render output (pseudo rendering to console — replace with DOM manipulation)
-const outfits = filterOutfits(generateOutfits(), userPreferences);
+const outfits = filterOutfits(generateOutfits(), userProfile);
 console.log("Suggested Outfits:", outfits);
 console.log("Smart Suggestions:", generateSuggestions());
