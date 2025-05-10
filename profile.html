@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleAura – Your Style Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎨 Define Your Style</h1>
+    <p class="tagline">Tell us about you for smarter suggestions</p>
+  </header>
+
+  <main class="form-container">
+    <form id="profileForm">
+      <label>Body Type:
+        <select name="bodyType" required>
+          <option value="">Select</option>
+          <option value="pear">Pear</option>
+          <option value="hourglass">Hourglass</option>
+          <option value="rectangle">Rectangle</option>
+          <option value="apple">Apple</option>
+        </select>
+      </label>
+
+      <label>Favorite Colors (comma-separated): 
+        <input type="text" name="colors" placeholder="e.g. pink, black, white" required />
+      </label>
+
+      <label>Style Preference:
+        <select name="stylePref" required>
+          <option value="">Select</option>
+          <option value="minimalist">Minimalist</option>
+          <option value="boho">Boho</option>
+          <option value="casual">Casual</option>
+          <option value="formal">Formal</option>
+          <option value="street">Street</option>
+        </select>
+      </label>
+
+      <label>Main Occasions:
+        <input type="text" name="occasions" placeholder="e.g. work, college, party" required />
+      </label>
+
+      <button type="submit" class="btn">💾 Save Profile</button>
+    </form>
+  </main>
+
+  <script src="profile.js"></script>
+</body>
+</html>
