@@ -1,211 +1,147 @@
-
-          <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Your Wardrobe – StyleAura</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f3f3fc;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #ffe4ec, #f9f0ff);
       color: #333;
     }
 
     header {
-      background-color: #ff9900;
-      padding: 30px 20px;
       text-align: center;
-      color: white;
-      border-bottom: 5px solid #ffa600;
+      padding: 2rem 1rem;
     }
 
     header h1 {
-      margin: 0;
       font-size: 2.5rem;
+      color: #444;
     }
 
-    header p {
-      font-size: 1.2rem;
-      margin-top: 10px;
+    .tagline {
+      color: #666;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
     }
 
-    .upload-box {
-      background-color: white;
-      max-width: 600px;
-      margin: 40px auto;
+    .upload-container {
+      background: white;
+      max-width: 500px;
+      margin: 0 auto;
+      margin-top: 30px;
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       text-align: center;
     }
 
-    .custom-file-upload {
+    input[type="file"] {
+      display: none;
+    }
+
+    label[for="fileInput"] {
       display: inline-block;
-      background-color: #ff8800;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 30px;
+      border: 2px dashed #ff99cc;
+      padding: 15px 30px;
+      border-radius: 12px;
+      background-color: #fff0f6;
+      color: #333;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 20px;
     }
 
     .btn {
-      background-color: #ff5c5c;
+      padding: 10px 20px;
       border: none;
-      color: white;
-      padding: 10px 18px;
-      margin: 10px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: bold;
+      border-radius: 8px;
       font-size: 1rem;
+      font-weight: 600;
+      margin: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .preview-item {
+    .btn.upload {
+      background-color: #ff85b3;
+      color: white;
+    }
+
+    .btn.upload:hover {
+      background-color: #ff66a3;
+    }
+
+    .btn.clear {
+      background-color: #ffd6e6;
+      color: #333;
+    }
+
+    .btn.clear:hover {
+      background-color: #ffbbd4;
+    }
+
+    #previewArea {
       margin-top: 20px;
-      border: 2px solid #ffae42;
+    }
+
+    .wardrobe-card {
+      background-color: #fff7fb;
+      border: 2px solid #ffb6c1;
+      padding: 15px;
+      margin: 15px auto;
+      width: 200px;
+      border-radius: 12px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    }
+
+    .wardrobe-card img {
+      width: 100%;
       border-radius: 10px;
-      padding: 10px;
-      display: inline-block;
+      margin-bottom: 10px;
     }
 
-    .preview-item img {
-      max-width: 150px;
-      border-radius: 8px;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .preview-item select {
-      margin-top: 10px;
+    select {
+      margin: 5px;
       padding: 6px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      font-family: inherit;
     }
 
-    .saved-label {
-      font-weight: bold;
-      margin-top: 8px;
-      display: block;
-      color: green;
+    p {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Upload Your Wardrobe 🧥👗</h1>
-    <p>Let StyleAura analyze your fashion pieces and help you style them better!</p>
+    <h1>Upload Your Wardrobe 👚👗</h1>
+    <p class="tagline">Let StyleAura analyze your fashion pieces and help you style them better!</p>
   </header>
 
-  <div class="upload-box">
-    <label class="custom-file-upload">
-      <input type="file" id="uploadInput" multiple accept="image/*" style="display: none;" />
-      📸 Choose Image(s)
-    </label>
+  <main class="upload-container">
+    <label for="fileInput">📸 Choose Images</label>
+    <input type="file" id="fileInput" accept="image/*" multiple />
 
-    <br>
-    <button class="btn" onclick="uploadImages()">Upload</button>
-    <button class="btn" onclick="clearWardrobe()">Clear Wardrobe</button>
+    <div>
+      <button class="btn upload" onclick="uploadImages()">Upload</button>
+      <button class="btn clear" onclick="clearWardrobe()">Clear Wardrobe</button>
+    </div>
 
-    <div id="previewContainer"></div>
-  </div>
+    <div id="previewArea">
+      <p>No wardrobe items available.</p>
+    </div>
+  </main>
 
-  <script>
-    function uploadImages() {
-      const input = document.getElementById("uploadInput");
-      const files = input.files;
-
-      if (files.length === 0) {
-        alert("Please select at least one image to upload.");
-        return;
-      }
-
-      for (let file of files) {
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-          const base64Image = event.target.result;
-
-          const container = document.createElement("div");
-          container.className = "preview-item";
-
-          const img = document.createElement("img");
-          img.src = base64Image;
-
-          const select = document.createElement("select");
-          select.innerHTML = `
-            <option value="">Select Category</option>
-            <option value="Top">Top</option>
-            <option value="Bottom">Bottom</option>
-            <option value="Footwear">Footwear</option>
-            <option value="Accessory">Accessory</option>
-            <option value="Outerwear">Outerwear</option>
-          `;
-
-          select.onchange = function () {
-            if (select.value !== "") {
-              let wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
-              wardrobe.push({
-                image: base64Image,
-                fileName: file.name,
-                category: select.value
-              });
-              localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
-              select.disabled = true;
-
-              const label = document.createElement("span");
-              label.className = "saved-label";
-              label.textContent = `Saved as ${select.value}`;
-              container.appendChild(label);
-            }
-          };
-
-          container.appendChild(img);
-          container.appendChild(select);
-          document.getElementById("previewContainer").appendChild(container);
-        };
-
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function clearWardrobe() {
-      localStorage.removeItem("wardrobe");
-      document.getElementById("previewContainer").innerHTML = "";
-      alert("Wardrobe has been cleared.");
-    }
-
-    // Show existing wardrobe on load
-    window.onload = function () {
-      const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
-      const previewContainer = document.getElementById("previewContainer");
-
-      if (wardrobe.length === 0) {
-        previewContainer.innerHTML = "<p>No wardrobe items available.</p>";
-      } else {
-        wardrobe.forEach((item) => {
-          const container = document.createElement("div");
-          container.className = "preview-item";
-
-          const img = document.createElement("img");
-          img.src = item.image;
-
-          const label = document.createElement("span");
-          label.className = "saved-label";
-          label.textContent = item.category;
-
-          container.appendChild(img);
-          container.appendChild(label);
-          previewContainer.appendChild(container);
-        });
-      }
-    };
-  </script>
-
+  <script src="upload.js"></script>
 </body>
 </html>
