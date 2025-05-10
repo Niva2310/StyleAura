@@ -1,98 +1,113 @@
-/* suggestions.css */
-
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #f8f9fc;
+  background: #f8f8ff;
+  color: #333;
+  text-align: center;
   margin: 0;
   padding: 0;
-  color: #333;
 }
 
 header {
-  background: linear-gradient(to right, #ff9900, #ffc107);
-  padding: 2rem;
-  text-align: center;
-  color: #fff;
+  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  padding: 20px;
   border-radius: 0 0 20px 20px;
 }
 
-header h1 {
+h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2rem;
+  color: #fff;
 }
 
 .tagline {
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-}
-
-.suggestion-box {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-  text-align: center;
-}
-
-.btn {
-  background: #ff6600;
   color: #fff;
-  padding: 0.8rem 1.5rem;
+  margin-top: 8px;
   font-size: 1rem;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin-top: 1.5rem;
-}
-
-.btn:hover {
-  background: #e65c00;
-}
-
-.outfit-item {
-  display: inline-block;
-  margin: 1rem;
-  padding: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 15px;
-  background: #fafafa;
-  width: 160px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-}
-
-.outfit-item h3 {
-  margin: 0.5rem 0;
-  font-size: 1.1rem;
-  color: #444;
-}
-
-.outfit-item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
 }
 
 .filters {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  margin: 20px 0;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
+.filters label,
 .filters select {
-  padding: 0.6rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #fff;
+  padding: 8px;
 }
 
-.save-msg {
-  color: green;
-  margin-top: 10px;
-  font-weight: 500;
+.suggestion-box {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px;
 }
+
+.outfit-item {
+  border: 2px dashed #ffa7c4;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff0f5;
+  width: 150px;
+}
+
+.outfit-item img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.outfit-item h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.btns {
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #ffa7c4;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #ff8fb4;
+}
+
+.save {
+  background-color: #98e4ff;
+}
+
+.save:hover {
+  background-color: #72d4f7;
+}
+
+.saved-looks {
+  margin-top: 30px;
+}
+
+.saved-looks h3 {
+  font-size: 1.3rem;
+}
+
+.saved-look {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #f0fff0;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
