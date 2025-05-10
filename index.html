@@ -12,7 +12,12 @@
   <header class="hero">
     <h1>Welcome to <span class="brand">StyleAura</span> 👗✨</h1>
     <p class="subtitle">Discover your personal style and organize your wardrobe effortlessly!</p>
+    
+    <!-- Check if user profile is saved -->
+    <div id="profileMessage"></div>
+    
     <a href="upload.html" class="cta-button">👚 Scan Your Wardrobe</a>
+    <a href="profile.html" class="cta-button">✍️ Set Up Your Style Profile</a>
   </header>
 
   <section class="features">
@@ -39,6 +44,21 @@
   <footer>
     © 2025 <span class="brand">StyleAura</span>. All rights reserved.
   </footer>
+
+  <!-- JavaScript to handle profile check -->
+  <script>
+    // Check if user profile is saved in localStorage
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+    const profileMessageDiv = document.getElementById("profileMessage");
+
+    if (userProfile) {
+      profileMessageDiv.innerHTML = `<p>Welcome back, ${userProfile.bodyType}! Ready to style your wardrobe?</p>`;
+    } else {
+      profileMessageDiv.innerHTML = `<p>Set up your style profile for personalized suggestions!</p>`;
+    }
+  </script>
 </body>
 </html>
+
 
