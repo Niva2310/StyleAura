@@ -49,8 +49,10 @@
   <script>
     function generateOutfit() {
       const wardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
+      const container = document.getElementById("outfitContainer");
+
       if (wardrobe.length === 0) {
-        document.getElementById("outfitContainer").innerHTML = "<p>No wardrobe items available.</p>";
+        container.innerHTML = "<p>No wardrobe items available.</p>";
         return;
       }
 
@@ -58,44 +60,45 @@
       const season = document.getElementById("season").value;
 
       const categories = {
-        Top: [],
-        Bottom: [],
-        Footwear: [],
-        Accessory: [],
-        Outerwear: []
+        top: [],
+        bottom: [],
+        dress: [],
+        footwear: [],
+        accessory: [],
+        outerwear: []
       };
 
       wardrobe.forEach(item => {
-        // Optional: Add filtering by occasion/season later if your wardrobe items store that
-        if (categories[item.category]) {
-          categories[item.category].push(item);
+        if (!item.category || !item.image) return;
+        const cat = item.category.toLowerCase();
+        if (categories[cat]) {
+          // (Optional: add occasion/season check here if your data includes it)
+          categories[cat].push(item);
         }
       });
 
-      const outfit = {};
-      for (let category in categories) {
-        const items = categories[category];
+      const selectedItems = {};
+      for (const cat in categories) {
+        const items = categories[cat];
         if (items.length > 0) {
-          const randomItem = items[Math.floor(Math.random() * items.length)];
-          outfit[category] = randomItem;
+          selectedItems[cat] = items[Math.floor(Math.random() * items.length)];
         }
       }
 
-      const container = document.getElementById("outfitContainer");
       container.innerHTML = "";
 
-      if (Object.keys(outfit).length === 0) {
+      if (Object.keys(selectedItems).length === 0) {
         container.innerHTML = "<p>No wardrobe items available for selected filters.</p>";
         return;
       }
 
-      for (let key in outfit) {
-        const item = outfit[key];
+      for (let key in selectedItems) {
+        const item = selectedItems[key];
         const section = document.createElement("div");
         section.className = "outfit-item";
 
         const label = document.createElement("h3");
-        label.textContent = key;
+        label.textContent = key.charAt(0).toUpperCase() + key.slice(1);
 
         const img = document.createElement("img");
         img.src = item.image;
@@ -121,17 +124,16 @@
     }
 
     function saveLook() {
-      const currentOutfit = document.getElementById("outfitContainer").innerHTML;
-      if (!currentOutfit.includes("img")) return alert("Generate an outfit first!");
+      const container = document.getElementById("outfitContainer");
+      const hasImage = container.querySelector("img");
+      if (!hasImage) return alert("Generate an outfit first!");
 
-      const container = document.getElementById("savedLooksContainer");
+      const savedContainer = document.getElementById("savedLooksContainer");
       const savedLook = document.createElement("div");
       savedLook.className = "saved-look";
-      savedLook.innerHTML = currentOutfit;
-      container.appendChild(savedLook);
+      savedLook.innerHTML = container.innerHTML;
+      savedContainer.appendChild(savedLook);
     }
   </script>
 </body>
 </html>
-
-
